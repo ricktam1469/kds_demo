@@ -1,5 +1,10 @@
 const AWS = require('aws-sdk');
 require("aws-sdk/lib/maintenance_mode_message").suppress = true;
+AWS.config.update({
+  accessKeyId: "AKIAZQHK5AIG7C26NO4E",
+  accessSecretKey: "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",
+  region: "ap-south-1",
+});
 const kinesis = new AWS.Kinesis({ region: 'ap-south-1' });
 
 async function readFromAllShards(streamName) {
@@ -11,7 +16,7 @@ async function readFromAllShards(streamName) {
     while (true) {
       const records = await kinesis.getRecords({
         ShardIterator: nextShardIterator,
-        Limit: 1000
+        Limit: 400
       }).promise();
 
       console.log("Reading....",records)
