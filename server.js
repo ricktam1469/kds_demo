@@ -1,10 +1,6 @@
 const AWS = require('aws-sdk');
 require("aws-sdk/lib/maintenance_mode_message").suppress = true;
-AWS.config.update({
-  accessKeyId: "AKIAZQHK5AIG7C26NO4E",
-  accessSecretKey: "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",
-  region: "ap-south-1",
-});
+AWS.config.loadFromPath('./cred.json');
 const kinesis = new AWS.Kinesis({ region: 'ap-south-1' });
 
 async function readFromAllShards(streamName) {
