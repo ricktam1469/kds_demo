@@ -3,11 +3,11 @@ require("aws-sdk/lib/maintenance_mode_message").suppress = true;
 AWS.config.loadFromPath('./cred.json');
 const kinesis = new AWS.Kinesis({ region: 'ap-south-1' });
 
-async function readFromAllShards(streamName) {
+async function readFromAllShards(streamName,ts) {
   const shardIds = await getShardIds(streamName);
   console.log("Reading")
   const promises = shardIds.map(async (shardId) => {
-    let nextShardIterator = await getShardIterator(streamName, shardId);
+    let nextShardIterator = await getShardIterator(streamName, shardId, ts);
 
     while (true) {
       const records = await kinesis.getRecords({
@@ -47,19 +47,20 @@ async function getShardIds(streamName) {
 //   return shardIterator.ShardIterator;
 // }
 
-async function getShardIterator(streamName, shardId) {
+async function getShardIterator(streamName, shardId, ts) {
   const shardIterator = await kinesis.getShardIterator({
     ShardId: shardId,
     ShardIteratorType: 'AT_TIMESTAMP',
     StreamName: streamName,
-    Timestamp: Math.floor(Date.now() / 1000)
+    Timestamp: ts
   }).promise();
 
   return shardIterator.ShardIterator;
 }
 
 try{
-  readFromAllShards("hiq_stream")
+  ts= Math.floor(Date.now() / 1000)
+  readFromAllShards("hiq_stream",ts)
 }
 catch(error){
   readFromAllShards("hiq_stream")
