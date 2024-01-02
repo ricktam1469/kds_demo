@@ -52,10 +52,15 @@ async function getShardIterator(streamName, shardId) {
     ShardId: shardId,
     ShardIteratorType: 'AT_TIMESTAMP',
     StreamName: streamName,
-    Timestamp: 1703107102
+    Timestamp: Math.floor(Date.now() / 1000)
   }).promise();
 
   return shardIterator.ShardIterator;
 }
 
-readFromAllShards("hiq_stream")
+try{
+  readFromAllShards("hiq_stream")
+}
+catch(error){
+  readFromAllShards("hiq_stream")
+}
